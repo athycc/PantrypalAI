@@ -95,7 +95,7 @@ jobs:
             else
               echo "Creating minimal placeholder dist/index.html"
               mkdir -p dist
-              cat > dist/index.html <<'EOF'
+              cat > dist/index.html <<EOF
 <!doctype html>
 <html>
   <head>
