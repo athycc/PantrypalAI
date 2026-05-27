@@ -1,0 +1,12 @@
+import type { ReactNode } from "react";
+import { PhoneFrame } from "./PhoneFrame";
+import { BottomNav } from "./BottomNav";
+
+export function AppShell({ children }: { children: ReactNode }) {
+  return (
+    <PhoneFrame>
+      <div className="flex-1 overflow-y-auto pb-2">{children}</div>
+      <BottomNav />
+    </PhoneFrame>
+  );
+}

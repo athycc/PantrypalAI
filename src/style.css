@@ -1,0 +1,106 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-display: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-honey: var(--honey);
+  --color-honey-deep: var(--honey-deep);
+  --color-fresh: var(--fresh);
+  --color-warn: var(--warn);
+  --color-danger: var(--danger);
+  --color-border: var(--border);
+  --color-ring: var(--ring);
+  --color-nav: var(--nav);
+}
+
+/* Default = LIGHT theme (warm honey cream) */
+:root {
+  --radius: 1rem;
+  --background: oklch(0.98 0.012 85);
+  --foreground: oklch(0.24 0.03 60);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.24 0.03 60);
+  --primary: oklch(0.72 0.18 70);
+  --primary-foreground: oklch(0.22 0.04 60);
+  --honey: oklch(0.78 0.17 80);
+  --honey-deep: oklch(0.68 0.19 55);
+  --secondary: oklch(0.94 0.02 80);
+  --secondary-foreground: oklch(0.24 0.03 60);
+  --muted: oklch(0.94 0.015 80);
+  --muted-foreground: oklch(0.5 0.03 60);
+  --accent: oklch(0.78 0.17 80);
+  --accent-foreground: oklch(0.22 0.04 60);
+  --fresh: oklch(0.65 0.16 150);
+  --warn: oklch(0.7 0.17 65);
+  --danger: oklch(0.6 0.22 28);
+  --destructive: oklch(0.6 0.22 28);
+  --destructive-foreground: oklch(0.98 0.01 90);
+  --border: oklch(0.9 0.02 80);
+  --input: oklch(0.9 0.02 80);
+  --ring: oklch(0.72 0.18 70);
+  --nav: oklch(1 0 0);
+  --gradient-honey: linear-gradient(135deg, oklch(0.85 0.17 80), oklch(0.72 0.19 55));
+  --gradient-fresh: linear-gradient(135deg, oklch(0.82 0.17 150), oklch(0.7 0.19 145));
+  --shadow-glow: 0 10px 40px -10px oklch(0.72 0.19 55 / 0.35);
+}
+
+.dark {
+  color-scheme: dark;
+  --background: oklch(0.18 0.02 260);
+  --foreground: oklch(0.98 0.01 90);
+  --card: oklch(0.23 0.025 260);
+  --card-foreground: oklch(0.98 0.01 90);
+  --primary: oklch(0.82 0.17 75);
+  --primary-foreground: oklch(0.22 0.04 60);
+  --honey: oklch(0.85 0.17 80);
+  --honey-deep: oklch(0.72 0.19 55);
+  --secondary: oklch(0.28 0.03 260);
+  --secondary-foreground: oklch(0.98 0.01 90);
+  --muted: oklch(0.28 0.025 260);
+  --muted-foreground: oklch(0.7 0.02 260);
+  --accent: oklch(0.82 0.17 75);
+  --accent-foreground: oklch(0.22 0.04 60);
+  --fresh: oklch(0.78 0.18 145);
+  --warn: oklch(0.78 0.17 65);
+  --danger: oklch(0.68 0.22 28);
+  --destructive: oklch(0.68 0.22 28);
+  --destructive-foreground: oklch(0.98 0.01 90);
+  --border: oklch(0.32 0.03 260);
+  --input: oklch(0.32 0.03 260);
+  --ring: oklch(0.82 0.17 75);
+  --nav: oklch(0.2 0.025 260);
+  --shadow-glow: 0 10px 40px -10px oklch(0.72 0.19 55 / 0.45);
+}
+
+@layer base {
+  * { border-color: var(--color-border); }
+  html, body { background-color: var(--color-background); color: var(--color-foreground); }
+  body { font-family: var(--font-display); -webkit-font-smoothing: antialiased; }
+}
+
+@layer utilities {
+  .bg-gradient-honey { background-image: var(--gradient-honey); }
+  .bg-gradient-fresh { background-image: var(--gradient-fresh); }
+  .shadow-glow { box-shadow: var(--shadow-glow); }
+}
