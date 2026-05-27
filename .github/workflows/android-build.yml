@@ -61,9 +61,38 @@ jobs:
           cd android
           chmod +x gradlew || true
           ./gradlew assembleDebug --no-daemon
+          ./gradlew assembleRelease --no-daemon || true
 
       - name: Upload debug APK
         uses: actions/upload-artifact@v4
         with:
           name: app-debug-apk
           path: android/app/build/outputs/apk/debug/app-debug.apk
+
+      - name: Upload unsigned release APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release-unsigned
+          path: android/app/build/outputs/apk/release/app-release-unsigned.apk
+
+      - name: Sign release APK (optional)
+        if: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+        run: |
+          echo "Decoding keystore from secret"
+          mkdir -p android/keystore
+          echo "$ANDROID_KEYSTORE_BASE64" | base64 --decode > android/keystore/keystore.jks
+          APK_IN=android/app/build/outputs/apk/release/app-release-unsigned.apk
+          APK_ALIGNED=android/app/build/outputs/apk/release/app-release-aligned.apk
+          APK_SIGNED=android/app/build/outputs/apk/release/app-release-signed.apk
+          BUILD_TOOLS="$ANDROID_SDK_ROOT/build-tools/33.0.2"
+          echo "Aligning APK"
+          $BUILD_TOOLS/zipalign -v -p 4 $APK_IN $APK_ALIGNED
+          echo "Signing APK"
+          $BUILD_TOOLS/apksigner sign --ks android/keystore/keystore.jks --ks-pass pass:$ANDROID_KEYSTORE_PASSWORD --key-pass pass:$ANDROID_KEY_PASSWORD --out $APK_SIGNED $APK_ALIGNED || true
+
+      - name: Upload signed release APK (if present)
+        if: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release-signed
+          path: android/app/build/outputs/apk/release/app-release-signed.apk
