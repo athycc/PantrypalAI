@@ -35,6 +35,7 @@ jobs:
             platforms;android-33
             build-tools;33.0.2
           ndk: false
+        continue-on-error: true
         # If this action cannot be resolved on the runner, the workflow will fail
         # and fallback to the manual sdkmanager approach can be reintroduced.
 
@@ -51,6 +52,25 @@ jobs:
             ~/.gradle/caches
             ~/.gradle/wrapper
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+
+      - name: Fallback: Install Android SDK command-line tools (if missing)
+        run: |
+          set -euo pipefail
+          if [ -x "$ANDROID_SDK_ROOT/platform-tools/adb" ] || [ -d "$ANDROID_SDK_ROOT/platform-tools" ]; then
+            echo "SDK already present, skipping manual install"
+            exit 0
+          fi
+          echo "SDK not found — installing command-line tools via sdkmanager"
+          mkdir -p $ANDROID_SDK_ROOT/cmdline-tools
+          for i in 1 2 3; do
+            wget https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip -O cmdline-tools.zip && break || sleep 5
+          done
+          unzip -q cmdline-tools.zip -d $ANDROID_SDK_ROOT/cmdline-tools
+          mv $ANDROID_SDK_ROOT/cmdline-tools/cmdline-tools $ANDROID_SDK_ROOT/cmdline-tools/latest || true
+          yes | $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager --sdk_root=$ANDROID_SDK_ROOT --licenses || true
+          for i in 1 2 3; do
+            $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager --sdk_root=$ANDROID_SDK_ROOT "platform-tools" "platforms;android-33" "build-tools;33.0.2" && break || sleep 5
+          done
 
       - name: Install dependencies (npm ci, fallback to npm install)
         run: |
@@ -113,8 +133,8 @@ jobs:
           cd android
           chmod +x gradlew || true
           echo "Running Gradle assemble (debug + release) with stacktrace"
-          ./gradlew assembleDebug --no-daemon --stacktrace 2>&1 | tee ../../gradle-assemble-debug.log
-          ./gradlew assembleRelease --no-daemon --stacktrace 2>&1 | tee -a ../../gradle-assemble-debug.log || true
+          ./gradlew assembleDebug --no-daemon --stacktrace --parallel --configure-on-demand 2>&1 | tee ../../gradle-assemble-debug.log
+          ./gradlew assembleRelease --no-daemon --stacktrace --parallel --configure-on-demand 2>&1 | tee -a ../../gradle-assemble-debug.log || true
 
       - name: Upload Gradle build log
         uses: actions/upload-artifact@v4
