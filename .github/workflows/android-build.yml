@@ -95,20 +95,7 @@ jobs:
             else
               echo "Creating minimal placeholder dist/index.html"
               mkdir -p dist
-              cat > dist/index.html <<EOF
-<!doctype html>
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>PantryPal (placeholder)</title>
-  </head>
-  <body>
-    <h1>PantryPal</h1>
-    <p>This is a placeholder index.html created by CI because the build did not produce one.</p>
-  </body>
-</html>
-EOF
+              printf '%s\n' '<!doctype html>' '<html>' '  <head>' '    <meta charset="utf-8" />' '    <meta name="viewport" content="width=device-width,initial-scale=1" />' '    <title>PantryPal (placeholder)</title>' '  </head>' '  <body>' '    <h1>PantryPal</h1>' '    <p>This is a placeholder index.html created by CI because the build did not produce one.</p>' '  </body>' '</html>' > dist/index.html
             fi
           fi
           echo "dist listing:" && ls -la dist || true
