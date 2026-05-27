@@ -25,14 +25,25 @@ jobs:
       - name: Set Android SDK root
         run: echo "ANDROID_SDK_ROOT=$RUNNER_TEMP/android-sdk" >> $GITHUB_ENV
 
-      - name: Install Android SDK command-line tools
+      - name: Install Android SDK command-line tools (with retries)
         run: |
+          set -euo pipefail
           mkdir -p $ANDROID_SDK_ROOT/cmdline-tools
-          wget https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip -O cmdline-tools.zip
+          for i in 1 2 3; do
+            wget https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip -O cmdline-tools.zip && break || sleep 5
+          done
           unzip -q cmdline-tools.zip -d $ANDROID_SDK_ROOT/cmdline-tools
-          mv $ANDROID_SDK_ROOT/cmdline-tools/cmdline-tools $ANDROID_SDK_ROOT/cmdline-tools/latest
+          mv $ANDROID_SDK_ROOT/cmdline-tools/cmdline-tools $ANDROID_SDK_ROOT/cmdline-tools/latest || true
           yes | $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager --sdk_root=$ANDROID_SDK_ROOT --licenses
-          $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager --sdk_root=$ANDROID_SDK_ROOT "platform-tools" "platforms;android-33" "build-tools;33.0.2"
+          for i in 1 2 3; do
+            $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager --sdk_root=$ANDROID_SDK_ROOT "platform-tools" "platforms;android-33" "build-tools;33.0.2" && break || sleep 5
+          done
+
+      - name: Cache npm
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
 
       - name: Install dependencies
         run: npm ci
@@ -43,11 +54,10 @@ jobs:
       - name: Ensure Capacitor CLI
         run: npx --yes @capacitor/cli --version
 
-      - name: Add Android platform (idempotent)
-        run: npx cap add android || echo "android platform already exists"
-
-      - name: Copy web assets into Android
-        run: npx cap copy android
+      - name: Sync Capacitor Android platform (add + copy)
+        run: |
+          echo "Running npx cap sync android"
+          npx cap sync android || ( echo "cap sync failed, retrying" && npx cap sync android )
 
       - name: Debug Android directory and Capacitor packages
         run: |
@@ -55,6 +65,8 @@ jobs:
           npm ls @capacitor/core @capacitor/android @capacitor/cli || true
           echo "--- android directory listing ---"
           ls -la android || true
+          echo "--- recursive android listing (first 200 lines) ---"
+          (ls -R android || true) | sed -n '1,200p'
           echo "--- gradlew info ---"
           if [ -f android/gradlew ]; then ls -la android/gradlew; android/gradlew --version || true; fi
           echo "--- show top-level Android Gradle files (first 200 lines) ---"
