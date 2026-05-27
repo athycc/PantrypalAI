@@ -113,7 +113,7 @@ EOF
           fi
           echo "dist listing:" && ls -la dist || true
 
-      - name: Upload web `dist` for debugging
+      - name: Upload web dist for debugging
         uses: actions/upload-artifact@v4
         with:
           name: web-dist
