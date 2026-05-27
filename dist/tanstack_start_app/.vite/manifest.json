@@ -1,0 +1,123 @@
+{
+  "C:/Users/notad/Downloads/pantry/src/style.css": {
+    "file": "assets/style-DomPlSDH.css",
+    "src": "C:/Users/notad/Downloads/pantry/src/style.css"
+  },
+  "_index-B1pHsVqa.js": {
+    "file": "assets/index-B1pHsVqa.js",
+    "name": "index",
+    "isDynamicEntry": true,
+    "imports": [
+      "_server-C3eyQudk.js",
+      "_worker-entry-i2qUKO6a.js"
+    ]
+  },
+  "_router-BjexS574.js": {
+    "file": "assets/router-BjexS574.js",
+    "name": "router",
+    "isDynamicEntry": true,
+    "imports": [
+      "_server-C3eyQudk.js"
+    ],
+    "dynamicImports": [
+      "_index-B1pHsVqa.js",
+      "node_modules/html2canvas/dist/html2canvas.esm.js",
+      "node_modules/dompurify/dist/purify.es.mjs",
+      "node_modules/canvg/lib/index.es.js"
+    ],
+    "assets": [
+      "assets/bee-chef-BwhDiCVG.png",
+      "assets/bee-happy-CmCBgT7H.png",
+      "assets/bee-sleepy-sYTeGiGE.png",
+      "assets/bee-worried-BgBdsD_t.png",
+      "assets/style-DomPlSDH.css"
+    ]
+  },
+  "_server-C3eyQudk.js": {
+    "file": "assets/server-C3eyQudk.js",
+    "name": "server",
+    "isDynamicEntry": true,
+    "dynamicImports": [
+      "tanstack-start-manifest:v",
+      "_router-BjexS574.js",
+      "src/start.ts",
+      "node_modules/@tanstack/start-server-core/dist/esm/empty-plugin-adapters.js"
+    ]
+  },
+  "_worker-entry-i2qUKO6a.js": {
+    "file": "assets/worker-entry-i2qUKO6a.js",
+    "name": "worker-entry",
+    "dynamicImports": [
+      "_server-C3eyQudk.js"
+    ]
+  },
+  "node_modules/@tanstack/start-server-core/dist/esm/empty-plugin-adapters.js": {
+    "file": "assets/empty-plugin-adapters-BFgPZ6_d.js",
+    "name": "empty-plugin-adapters",
+    "src": "node_modules/@tanstack/start-server-core/dist/esm/empty-plugin-adapters.js",
+    "isDynamicEntry": true
+  },
+  "node_modules/canvg/lib/index.es.js": {
+    "file": "assets/index.es-DWtvJ9cf.js",
+    "name": "index.es",
+    "src": "node_modules/canvg/lib/index.es.js",
+    "isDynamicEntry": true,
+    "imports": [
+      "_server-C3eyQudk.js",
+      "_router-BjexS574.js"
+    ]
+  },
+  "node_modules/dompurify/dist/purify.es.mjs": {
+    "file": "assets/purify.es-D8ffPfM3.js",
+    "name": "purify.es",
+    "src": "node_modules/dompurify/dist/purify.es.mjs",
+    "isDynamicEntry": true
+  },
+  "node_modules/html2canvas/dist/html2canvas.esm.js": {
+    "file": "assets/html2canvas.esm-C17pzFXx.js",
+    "name": "html2canvas.esm",
+    "src": "node_modules/html2canvas/dist/html2canvas.esm.js",
+    "isDynamicEntry": true
+  },
+  "src/assets/bee-chef.png": {
+    "file": "assets/bee-chef-BwhDiCVG.png",
+    "src": "src/assets/bee-chef.png"
+  },
+  "src/assets/bee-happy.png": {
+    "file": "assets/bee-happy-CmCBgT7H.png",
+    "src": "src/assets/bee-happy.png"
+  },
+  "src/assets/bee-sleepy.png": {
+    "file": "assets/bee-sleepy-sYTeGiGE.png",
+    "src": "src/assets/bee-sleepy.png"
+  },
+  "src/assets/bee-worried.png": {
+    "file": "assets/bee-worried-BgBdsD_t.png",
+    "src": "src/assets/bee-worried.png"
+  },
+  "src/start.ts": {
+    "file": "assets/start-UV2BLNyb.js",
+    "name": "start",
+    "src": "src/start.ts",
+    "isDynamicEntry": true,
+    "imports": [
+      "_server-C3eyQudk.js",
+      "_worker-entry-i2qUKO6a.js"
+    ]
+  },
+  "tanstack-start-manifest:v": {
+    "file": "assets/_tanstack-start-manifest_v-DaEwjRFE.js",
+    "name": "_tanstack-start-manifest_v",
+    "src": "tanstack-start-manifest:v",
+    "isDynamicEntry": true
+  },
+  "virtual:cloudflare/worker-entry": {
+    "file": "index.js",
+    "name": "index",
+    "src": "virtual:cloudflare/worker-entry",
+    "isEntry": true,
+    "imports": [
+      "_worker-entry-i2qUKO6a.js"
+    ]
+  }
+}

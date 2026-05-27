@@ -6,6 +6,13 @@ import { defineConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
+  optimizeDeps: {
+    exclude: [
+      "@tanstack/start-client-core",
+      "@tanstack/start-plugin-core",
+      "@tanstack/start-server-core",
+    ],
+  },
   plugins: [
     cloudflare(),
     tanstackStart({

@@ -1,0 +1,6 @@
+{
+  "appId": "com.pantrypal.app",
+  "appName": "PantryPal",
+  "webDir": "dist",
+  "bundledWebRuntime": false
+}
