@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite dev",
     "build": "vite build",
+    "generate-dist-index": "node scripts/generate-dist-index.js",
     "cap:sync": "npx cap sync",
     "cap:add-android": "npx cap add android || true",
     "android:ci": "npm run build && npx cap copy android",
