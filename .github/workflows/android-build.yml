@@ -82,17 +82,19 @@ jobs:
         run: npm run build
 
       - name: Ensure Capacitor CLI
-        run: npx --yes @capacitor/cli --version
+        run: ./node_modules/.bin/cap --version
 
       - name: Ensure Capacitor Android platform
         run: |
           echo "Ensuring android platform exists"
-          npx cap add android || true
+          if [ ! -d android ]; then
+            ./node_modules/.bin/cap add android
+          fi
 
       - name: Sync Capacitor Android platform (add + copy)
         run: |
-          echo "Running npx cap sync android"
-          npx cap sync android || ( echo "cap sync failed, retrying" && npx cap sync android )
+          echo "Running ./node_modules/.bin/cap sync android"
+          ./node_modules/.bin/cap sync android
 
       - name: Debug Android directory and Capacitor packages
         run: |
