@@ -123,18 +123,21 @@ jobs:
 
       - name: Debug Android directory and Capacitor packages
         run: |
-          echo "--- npm list @capacitor packages ---"
-          npm ls @capacitor/core @capacitor/android @capacitor/cli || true
-          echo "--- android directory listing ---"
-          ls -la android || true
-          echo "--- recursive android listing (first 200 lines) ---"
-          (ls -R android || true) | sed -n '1,200p'
-          echo "--- gradlew info ---"
-          if [ -f android/gradlew ]; then ls -la android/gradlew; android/gradlew --version || true; fi
-          echo "--- show top-level Android Gradle files (first 200 lines) ---"
+          mkdir -p debug
+          echo "--- npm list @capacitor packages ---" > debug/npm-ls.log
+          npm ls @capacitor/core @capacitor/android @capacitor/cli >> debug/npm-ls.log 2>&1 || true
+          echo "--- android directory listing ---" > debug/android-ls.log
+          ls -la android >> debug/android-ls.log 2>&1 || true
+          echo "--- recursive android listing (first 200 lines) ---" > debug/android-recursive.log
+          (ls -R android || true) | sed -n '1,200p' >> debug/android-recursive.log 2>&1 || true
+          echo "--- gradlew info ---" > debug/gradlew-info.log
+          if [ -f android/gradlew ]; then ls -la android/gradlew >> debug/gradlew-info.log 2>&1; android/gradlew --version >> debug/gradlew-info.log 2>&1 || true; fi
+          echo "--- show top-level Android Gradle files (first 200 lines) ---" > debug/top-files.log
           for f in android/*.gradle android/**/build.gradle android/**/settings.gradle android/**/gradle.properties 2>/dev/null; do
-            if [ -f "$f" ]; then echo "--- FILE: $f ---"; sed -n '1,200p' "$f" || true; fi
+            if [ -f "$f" ]; then echo "--- FILE: $f ---" >> debug/top-files.log; sed -n '1,200p' "$f" >> debug/top-files.log || true; fi
           done || true
+          echo "Created debug logs:" && ls -la debug || true
+          exit 0
 
       - name: Inspect Android dir and make gradlew executable
         run: |
@@ -142,6 +145,12 @@ jobs:
           ls -la android || true
           if [ -f android/gradlew ]; then chmod +x android/gradlew; fi
           if [ -f android/gradlew ]; then android/gradlew --version || true; fi
+
+      - name: Upload Android debug logs
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-debug-logs
+          path: debug
 
       - name: Write Android local.properties
         run: |
