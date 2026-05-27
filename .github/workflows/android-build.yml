@@ -2,7 +2,7 @@ name: Android CI Build (Capacitor)
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [ main, master, ci/android-capacitor ]
   workflow_dispatch:
 
 jobs:
