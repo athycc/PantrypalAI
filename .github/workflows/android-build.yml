@@ -49,6 +49,19 @@ jobs:
       - name: Copy web assets into Android
         run: npx cap copy android
 
+      - name: Debug Android directory and Capacitor packages
+        run: |
+          echo "--- npm list @capacitor packages ---"
+          npm ls @capacitor/core @capacitor/android @capacitor/cli || true
+          echo "--- android directory listing ---"
+          ls -la android || true
+          echo "--- gradlew info ---"
+          if [ -f android/gradlew ]; then ls -la android/gradlew; android/gradlew --version || true; fi
+          echo "--- show top-level Android Gradle files (first 200 lines) ---"
+          for f in android/*.gradle android/**/build.gradle android/**/settings.gradle android/**/gradle.properties 2>/dev/null; do
+            if [ -f "$f" ]; then echo "--- FILE: $f ---"; sed -n '1,200p' "$f" || true; fi
+          done || true
+
       - name: Inspect Android dir and make gradlew executable
         run: |
           echo "--- android directory listing ---"
