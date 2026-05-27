@@ -88,7 +88,12 @@ jobs:
           echo "Aligning APK"
           $BUILD_TOOLS/zipalign -v -p 4 $APK_IN $APK_ALIGNED
           echo "Signing APK"
-          $BUILD_TOOLS/apksigner sign --ks android/keystore/keystore.jks --ks-pass pass:$ANDROID_KEYSTORE_PASSWORD --key-pass pass:$ANDROID_KEY_PASSWORD --out $APK_SIGNED $APK_ALIGNED || true
+          # Use alias if provided
+          if [ -n "$ANDROID_KEY_ALIAS" ]; then
+            $BUILD_TOOLS/apksigner sign --ks android/keystore/keystore.jks --ks-key-alias $ANDROID_KEY_ALIAS --ks-pass pass:$ANDROID_KEYSTORE_PASSWORD --key-pass pass:$ANDROID_KEY_PASSWORD --out $APK_SIGNED $APK_ALIGNED || true
+          else
+            $BUILD_TOOLS/apksigner sign --ks android/keystore/keystore.jks --ks-pass pass:$ANDROID_KEYSTORE_PASSWORD --key-pass pass:$ANDROID_KEY_PASSWORD --out $APK_SIGNED $APK_ALIGNED || true
+          fi
 
       - name: Upload signed release APK (if present)
         if: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
