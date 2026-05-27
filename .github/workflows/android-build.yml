@@ -75,10 +75,17 @@ jobs:
           name: app-release-unsigned
           path: android/app/build/outputs/apk/release/app-release-unsigned.apk
 
-      - name: Sign release APK (optional)
-        if: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+      - name: Load signing secrets into env
         run: |
-          echo "Decoding keystore from secret"
+          echo "ANDROID_KEYSTORE_BASE64=${{ secrets.ANDROID_KEYSTORE_BASE64 }}" >> $GITHUB_ENV
+          echo "ANDROID_KEYSTORE_PASSWORD=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}" >> $GITHUB_ENV
+          echo "ANDROID_KEY_PASSWORD=${{ secrets.ANDROID_KEY_PASSWORD }}" >> $GITHUB_ENV
+          echo "ANDROID_KEY_ALIAS=${{ secrets.ANDROID_KEY_ALIAS }}" >> $GITHUB_ENV
+
+      - name: Sign release APK (optional)
+        if: ${{ env.ANDROID_KEYSTORE_BASE64 != '' }}
+        run: |
+          echo "Decoding keystore from env"
           mkdir -p android/keystore
           echo "$ANDROID_KEYSTORE_BASE64" | base64 --decode > android/keystore/keystore.jks
           APK_IN=android/app/build/outputs/apk/release/app-release-unsigned.apk
@@ -88,7 +95,6 @@ jobs:
           echo "Aligning APK"
           $BUILD_TOOLS/zipalign -v -p 4 $APK_IN $APK_ALIGNED
           echo "Signing APK"
-          # Use alias if provided
           if [ -n "$ANDROID_KEY_ALIAS" ]; then
             $BUILD_TOOLS/apksigner sign --ks android/keystore/keystore.jks --ks-key-alias $ANDROID_KEY_ALIAS --ks-pass pass:$ANDROID_KEYSTORE_PASSWORD --key-pass pass:$ANDROID_KEY_PASSWORD --out $APK_SIGNED $APK_ALIGNED || true
           else
@@ -96,7 +102,7 @@ jobs:
           fi
 
       - name: Upload signed release APK (if present)
-        if: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+        if: ${{ env.ANDROID_KEYSTORE_BASE64 != '' }}
         uses: actions/upload-artifact@v4
         with:
           name: app-release-signed
