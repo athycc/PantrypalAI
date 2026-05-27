@@ -128,13 +128,14 @@ jobs:
           echo "sdk.dir=$ANDROID_SDK_ROOT" > android/local.properties
           echo "Contents:" && sed -n '1,200p' android/local.properties || true
 
-      - name: Assemble APK
+      - name: Assemble Debug APK (fast)
         run: |
           cd android
           chmod +x gradlew || true
-          echo "Running Gradle assemble (debug + release) with stacktrace"
+          echo "Running Gradle assembleDebug (fast) with stacktrace"
           ./gradlew assembleDebug --no-daemon --stacktrace --parallel --configure-on-demand 2>&1 | tee ../../gradle-assemble-debug.log
-          ./gradlew assembleRelease --no-daemon --stacktrace --parallel --configure-on-demand 2>&1 | tee -a ../../gradle-assemble-debug.log || true
+
+      # Note: release build is slower and will be run later when debug APK works.
 
       - name: Upload Gradle build log
         uses: actions/upload-artifact@v4
