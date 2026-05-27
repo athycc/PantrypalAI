@@ -46,7 +46,18 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
 
       - name: Install dependencies
-        run: npm ci
+        run: |
+          echo "Running npm ci (verbose) and saving log"
+          set -e
+          for i in 1 2; do
+            npm ci --verbose 2>&1 | tee npm-ci.log && break || (echo "npm ci failed (attempt $i)"; sleep 3)
+          done
+
+      - name: Upload npm install log
+        uses: actions/upload-artifact@v4
+        with:
+          name: npm-ci-log
+          path: npm-ci.log
 
       - name: Build web (Vite)
         run: npm run build
