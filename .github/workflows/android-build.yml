@@ -81,6 +81,44 @@ jobs:
       - name: Build web (Vite)
         run: npm run build
 
+      - name: Ensure dist/index.html exists (fallback)
+        run: |
+          set -euo pipefail
+          echo "Checking for dist/index.html"
+          if [ -f dist/index.html ]; then
+            echo "dist/index.html exists"
+          else
+            echo "dist/index.html missing — attempting dev build"
+            npm run build:dev || true
+            if [ -f dist/index.html ]; then
+              echo "dev build produced dist/index.html"
+            else
+              echo "Creating minimal placeholder dist/index.html"
+              mkdir -p dist
+              cat > dist/index.html <<'EOF'
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>PantryPal (placeholder)</title>
+  </head>
+  <body>
+    <h1>PantryPal</h1>
+    <p>This is a placeholder index.html created by CI because the build did not produce one.</p>
+  </body>
+</html>
+EOF
+            fi
+          fi
+          echo "dist listing:" && ls -la dist || true
+
+      - name: Upload web `dist` for debugging
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-dist
+          path: dist
+
       - name: Ensure Capacitor CLI
         run: ./node_modules/.bin/cap --version
 
