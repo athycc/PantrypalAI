@@ -25,19 +25,9 @@ jobs:
       - name: Set Android SDK root
         run: echo "ANDROID_SDK_ROOT=$RUNNER_TEMP/android-sdk" >> $GITHUB_ENV
 
-      - name: Setup Android SDK (google-github-actions/setup-android)
-        uses: google-github-actions/setup-android@v2
-        with:
-          api-level: 33
-          build-tools: 33.0.2
-          components: |
-            platform-tools
-            platforms;android-33
-            build-tools;33.0.2
-          ndk: false
-        continue-on-error: true
-        # If this action cannot be resolved on the runner, the workflow will fail
-        # and fallback to the manual sdkmanager approach can be reintroduced.
+      # Note: using manual sdkmanager install instead of google-github-actions/setup-android
+      # because some runners cannot resolve that marketplace action. The manual fallback
+      # step below installs command-line tools and SDK components when needed.
 
       - name: Cache npm
         uses: actions/cache@v4
