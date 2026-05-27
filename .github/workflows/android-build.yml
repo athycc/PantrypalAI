@@ -69,12 +69,26 @@ jobs:
           if [ -f android/gradlew ]; then chmod +x android/gradlew; fi
           if [ -f android/gradlew ]; then android/gradlew --version || true; fi
 
+      - name: Write Android local.properties
+        run: |
+          echo "Writing local.properties pointing to SDK"
+          mkdir -p android || true
+          echo "sdk.dir=$ANDROID_SDK_ROOT" > android/local.properties
+          echo "Contents:" && sed -n '1,200p' android/local.properties || true
+
       - name: Assemble APK
         run: |
           cd android
           chmod +x gradlew || true
-          ./gradlew assembleDebug --no-daemon
-          ./gradlew assembleRelease --no-daemon || true
+          echo "Running Gradle assemble (debug + release) with stacktrace"
+          ./gradlew assembleDebug --no-daemon --stacktrace 2>&1 | tee ../../gradle-assemble-debug.log
+          ./gradlew assembleRelease --no-daemon --stacktrace 2>&1 | tee -a ../../gradle-assemble-debug.log || true
+
+      - name: Upload Gradle build log
+        uses: actions/upload-artifact@v4
+        with:
+          name: gradle-assemble-log
+          path: gradle-assemble-debug.log
 
       - name: Upload debug APK
         uses: actions/upload-artifact@v4
