@@ -49,9 +49,17 @@ jobs:
       - name: Copy web assets into Android
         run: npx cap copy android
 
+      - name: Inspect Android dir and make gradlew executable
+        run: |
+          echo "--- android directory listing ---"
+          ls -la android || true
+          if [ -f android/gradlew ]; then chmod +x android/gradlew; fi
+          if [ -f android/gradlew ]; then android/gradlew --version || true; fi
+
       - name: Assemble APK
         run: |
           cd android
+          chmod +x gradlew || true
           ./gradlew assembleDebug --no-daemon
 
       - name: Upload debug APK
